@@ -16,30 +16,73 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
+### Set CUDA devices:
+
+Edit `src/helpers/constants.py` to set `DEVICES` to the list of CUDA devices you want to use.
+
 ### Download Dataset & Preprocess Data
 
 If you would like to operate on the default list of subreddits we used in our paper, run:
 
 ```bash
-$ python src/preprocess.py
+$ python -m src.preprocess
 ```
 
 If you would instead like to pass a custom list of subreddits, use the following:
 
 ```bash
-$ python src/preprocess.py <SUBREDDIT> ... <SUBREDDIT>
+$ python -m src.preprocess <SUBREDDIT> ... <SUBREDDIT>
 ```
 
 ## Usage
 
 ### Freeform Training
 
-TODO
+To train some set of models, tuning all parameters, use the `freeform.py` script. All model configs
+are checked for validity before training. For example:
 
-### Table Replication
+```python
+for model_folds in scheduler.train(
+    [
+        OursModelConfig(
+            subreddit="depression",
+            training_scheme=TrainAll(),
+            epochs=25,
+        ),
+    ]
+):
+    model, _ = model_folds[0]
+    model.write()
+```
 
-TODO
+### Table and Figure Replication
 
-### Figure Replication
+All tables and figures from the paper can easily be replicated using the scripts in the `src/tables`
+and `src/figures` directories. To make generation easy, the scripts expect model files for models
+that have been previously trained, using our `freeform` script.
 
-TODO
+For example, to generate table 1 in the paper, we run:
+
+```bash
+python3 -m src.tables.subreddit_pairs --output_name subreddit_pairs
+```
+
+To generate an Attention Directed Graph (ADG) of sports, we would train our model, by running freeform
+with the following config:
+
+```python
+OursModelConfig(
+    subreddit="sports",
+    training_scheme=TrainAll(),
+    epochs=25,
+)
+```
+
+Then, we would generate the ADG by running:
+
+```bash
+python3 -m src.figures.attention_directed_graph \
+    --subreddit sports \
+    --model_name ours_sports
+    --output_name adg_sports \
+```
