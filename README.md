@@ -58,8 +58,8 @@ for model_folds in scheduler.train(
 ### Table and Figure Replication
 
 All tables and figures from the paper can easily be replicated using the scripts in the `src/tables`
-and `src/figures` directories. To make generation easy, the scripts expect model files for models
-that have been previously trained, using our `freeform` script.
+and `src/figures` directories. To make generation efficient, the scripts expect model files for
+previously trained models using our `freeform` script.
 
 For example, to generate table 1 in the paper, we run:
 
@@ -67,7 +67,7 @@ For example, to generate table 1 in the paper, we run:
 python3 -m src.tables.subreddit_pairs --output_name subreddit_pairs
 ```
 
-To generate an Attention Directed Graph (ADG) of sports, we would train our model, by running freeform
+To generate an Attention Directed Graph (ADG) of sports, we would train our model by running freeform
 with the following config:
 
 ```python
@@ -84,5 +84,5 @@ Then, we would generate the ADG by running:
 python3 -m src.figures.attention_directed_graph \
     --subreddit sports \
     --model_name ours_sports
-    --output_name adg_sports \
+    --output_name adg_sports
 ```
